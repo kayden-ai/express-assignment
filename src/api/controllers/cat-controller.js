@@ -14,7 +14,15 @@ const retrieveCatById = (req, res) => {
 };
 
 const createCat = (req, res) => {
+  console.log('Form Body:', req.body);
+  console.log('Uploaded File:', req.file);
+
+  if (req.file) {
+    req.body.filename = req.file.filename;
+  }
+
   const newCat = insertCat(req.body);
+
   if (newCat.cat_id) {
     res
       .status(201)
