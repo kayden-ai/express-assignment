@@ -75,3 +75,14 @@ Content-Type: application/json
 {
   "name": "Intruder"
 }
+
+### TEST VALIDATION: Try to create a user with bad data
+POST http://127.0.0.1:3000/api/v1/users
+Content-Type: application/json
+
+{
+  "name": "Rule Breaker",
+  "username": "ha", 
+  "email": "not-an-email",
+  "password": "123"
+}
