@@ -7,17 +7,19 @@ import {
   createCat,
   updateCat,
   removeCat,
+  retrieveCatsByUserId,
 } from '../controllers/cat-controller.js';
 
 const catRouter = express.Router();
 
 const upload = multer({dest: 'uploads/'});
 
-// 2. Chain upload.single and createThumbnail together
 catRouter
   .route('/')
   .get(retrieveCats)
   .post(upload.single('cat'), createThumbnail, createCat);
+
+catRouter.get('/user/:id', retrieveCatsByUserId);
 
 catRouter.route('/:id').get(retrieveCatById).put(updateCat).delete(removeCat);
 
