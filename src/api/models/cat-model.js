@@ -38,25 +38,42 @@ const insertCat = async (cat) => {
   return {cat_id: rows.insertId};
 };
 
-const modifyCat = async (cat, id) => {
-  const sql = promisePool.format(`UPDATE wsk_cats SET ? WHERE cat_id = ?`, [
-    cat,
-    id,
-  ]);
-  const [rows] = await promisePool.execute(sql);
+const modifyCat = async (cat, id, user) => {
+  let sql;
+  let params;
+  if (user.role === 'admin') {
+    sql = promisePool.format(`UPDATE wsk_cats SET ? WHERE cat_id = ?`, [
+      cat,
+      id,
+    ]);
+    params = [];
+  } else {
+    sql = promisePool.format(
+      `UPDATE wsk_cats SET ? WHERE cat_id = ? AND owner = ?`,
+      [cat, id, user.user_id]
+    );
+    params = [];
+  }
 
+  const [rows] = await promisePool.execute(sql, params);
   if (rows.affectedRows === 0) {
     return false;
   }
   return {message: 'Cat successfully updated'};
 };
 
-const removeCatById = async (id) => {
-  const [rows] = await promisePool.execute(
-    'DELETE FROM wsk_cats WHERE cat_id = ?',
-    [id]
-  );
+const removeCatById = async (id, user) => {
+  let sql;
+  let params;
+  if (user.role === 'admin') {
+    sql = 'DELETE FROM wsk_cats WHERE cat_id = ?';
+    params = [id];
+  } else {
+    sql = 'DELETE FROM wsk_cats WHERE cat_id = ? AND owner = ?';
+    params = [id, user.user_id];
+  }
 
+  const [rows] = await promisePool.execute(sql, params);
   if (rows.affectedRows === 0) {
     return false;
   }

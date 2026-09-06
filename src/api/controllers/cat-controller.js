@@ -57,11 +57,11 @@ const createCat = async (req, res) => {
 
 const updateCat = async (req, res) => {
   try {
-    const result = await modifyCat(req.body, req.params.id);
+    const result = await modifyCat(req.body, req.params.id, res.locals.user);
     if (result) {
       res.json(result);
     } else {
-      res.sendStatus(400);
+      res.sendStatus(403);
     }
   } catch (error) {
     console.error('Error updating cat:', error);
@@ -71,11 +71,11 @@ const updateCat = async (req, res) => {
 
 const removeCat = async (req, res) => {
   try {
-    const result = await removeCatById(req.params.id);
+    const result = await removeCatById(req.params.id, res.locals.user);
     if (result) {
       res.json(result);
     } else {
-      res.sendStatus(404);
+      res.sendStatus(403);
     }
   } catch (error) {
     console.error('Error removing cat:', error);

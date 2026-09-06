@@ -29,4 +29,49 @@ Content-Type: image/jpeg
 --MyBoundary--
 
 ### GET CATS BY USER ID
-GET http://127.0.0.1:3000/api/v1/cats/user/37
+GET http://127.0.0.1:3000/api/v1/cats/user/37   
+
+### CREATE A NEW USER
+POST http://127.0.0.1:3000/api/v1/users
+Content-Type: application/json
+
+{
+  "name": "Aubhav Rimal",
+  "username": "anubhavr",
+  "email": "anubhavr@test.com",
+  "password": "mySuperSecretPassword123"
+}
+
+### LOGIN USER
+# @name login
+POST http://127.0.0.1:3000/api/v1/auth/login
+Content-Type: application/json
+
+{
+  "username": "anubhavr",
+  "password": "mySuperSecretPassword123"
+}
+
+### GET MY USER INFO (Protected Route)
+GET http://127.0.0.1:3000/api/v1/auth/me
+Authorization: Bearer {{login.response.body.token}}
+
+### TEST 1: Regular user tries to update another user's cat (Should return 403 Forbidden)
+# Logged in as User 38 (anubhavr), trying to edit Cat 41 (owned by User 37)
+PUT http://127.0.0.1:3000/api/v1/cats/41
+Authorization: Bearer {{login.response.body.token}}
+Content-Type: application/json
+
+{
+  "cat_name": "Hacked Cat"
+}
+
+### TEST 2: Regular user tries to update another user's profile (Should return 403 Forbidden)
+# Logged in as User 38, trying to modify User 37
+PUT http://127.0.0.1:3000/api/v1/users/37
+Authorization: Bearer {{login.response.body.token}}
+Content-Type: application/json
+
+{
+  "name": "Intruder"
+}
